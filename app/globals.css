@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+/* ===== Nduyku palet (port dari v1) ===== */
+:root,
+[data-theme="light"] {
+  --c-srf-lowest: 255 255 255; --c-srf-low: 255 240 246; --c-srf: 250 234 241;
+  --c-srf-high: 244 228 235; --c-srf-highest: 238 222 229;
+  --c-on-s: 33 25 30; --c-on-sv: 84 66 73;
+  --c-outline: 135 113 122; --c-outline-var: 218 192 201; --c-ink: 74 62 68;
+  --c-primary: 164 48 115; --c-on-primary: 255 255 255;
+  --c-p-cont: 244 114 182; --c-on-p-cont: 109 0 71;
+  --c-p-fix: 255 216 231; --c-p-fixd: 255 175 211;
+  --c-secondary: 123 65 180; --c-on-secondary: 255 255 255;
+  --c-s-cont: 193 133 253; --c-on-s-cont: 81 12 138;
+  --c-s-fix: 240 219 255; --c-s-fixd: 221 184 255;
+  --c-tertiary: 27 107 79; --c-on-tertiary: 255 255 255;
+  --c-t-cont: 99 173 142; --c-on-t-cont: 0 62 44; --c-t-fix: 166 242 207;
+  --c-err: 186 26 26; --c-err-c: 255 218 214; --c-on-err-c: 147 0 10;
+  --c-butter: 254 243 199; --c-mint: 230 244 234; --c-mint-ink: 22 101 52;
+}
+[data-theme="dark"],
+[data-theme="rain"] {
+  --c-srf-lowest: 43 32 39; --c-srf-low: 51 37 48; --c-srf: 59 43 56;
+  --c-srf-high: 71 51 68; --c-srf-highest: 84 59 77;
+  --c-on-s: 246 235 242; --c-on-sv: 217 196 211;
+  --c-outline: 160 137 152; --c-outline-var: 95 72 85; --c-ink: 236 220 231;
+  --c-primary: 240 107 173; --c-on-primary: 51 16 31;
+  --c-p-cont: 209 69 138; --c-on-p-cont: 255 211 232;
+  --c-p-fix: 82 41 63; --c-p-fixd: 107 58 85;
+  --c-secondary: 177 138 232; --c-on-secondary: 36 19 51;
+  --c-s-cont: 201 166 250; --c-on-s-cont: 236 223 252;
+  --c-s-fix: 66 44 78; --c-s-fixd: 88 61 103;
+  --c-tertiary: 120 200 165; --c-on-tertiary: 8 41 27;
+  --c-t-cont: 62 130 99; --c-on-t-cont: 214 245 228; --c-t-fix: 36 74 56;
+  --c-err: 255 107 130; --c-err-c: 74 26 37; --c-on-err-c: 255 214 221;
+  --c-butter: 96 82 50; --c-mint: 34 74 51; --c-mint-ink: 198 240 214;
+}
+[data-theme="calm"] {
+  /* tenang: palet light, aksen didinginin */
+  --c-p-cont: 240 171 203; --c-s-cont: 214 178 253; --c-t-cont: 140 200 172;
+}
+
+/* mapping Tailwind v4: bg-srf, text-on-sv, dsb */
+@theme inline {
+  --color-srf-lowest: rgb(var(--c-srf-lowest));
+  --color-srf-low: rgb(var(--c-srf-low));
+  --color-srf: rgb(var(--c-srf));
+  --color-srf-high: rgb(var(--c-srf-high));
+  --color-srf-highest: rgb(var(--c-srf-highest));
+  --color-on-s: rgb(var(--c-on-s));
+  --color-on-sv: rgb(var(--c-on-sv));
+  --color-outline: rgb(var(--c-outline));
+  --color-outline-var: rgb(var(--c-outline-var));
+  --color-ink: rgb(var(--c-ink));
+  --color-primary: rgb(var(--c-primary));
+  --color-on-primary: rgb(var(--c-on-primary));
+  --color-p-cont: rgb(var(--c-p-cont));
+  --color-on-p-cont: rgb(var(--c-on-p-cont));
+  --color-p-fix: rgb(var(--c-p-fix));
+  --color-p-fixd: rgb(var(--c-p-fixd));
+  --color-secondary: rgb(var(--c-secondary));
+  --color-secondary-c: rgb(var(--c-s-cont));
+  --color-mint: rgb(var(--c-mint));
+  --color-mint-ink: rgb(var(--c-mint-ink));
+  --color-butter: rgb(var(--c-butter));
+  --color-err: rgb(var(--c-err));
+  --color-err-c: rgb(var(--c-err-c));
+}
+
+body {
+  background: rgb(var(--c-srf-low));
+  color: rgb(var(--c-on-sv));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
