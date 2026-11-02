@@ -30,20 +30,6 @@ export async function middleware(req: NextRequest) {
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
-  // allowlist: user login tapi bukan pasangan → keluar
-  if (data.user && !isLogin) {
-    const { data: ok } = await sb
-      .from("allowed_users")
-      .select("email")
-      .eq("email", data.user.email);
-    if (!ok || ok.length === 0) {
-      await sb.auth.signOut();
-      const url = req.nextUrl.clone();
-      url.pathname = "/login";
-      url.searchParams.set("e", "not-allowed");
-      return NextResponse.redirect(url);
-    }
-  }
   if (data.user && isLogin) {
     const url = req.nextUrl.clone();
     url.pathname = "/";
