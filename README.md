@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nduyku v2 💖
 
-## Getting Started
+Couple app full-stack: **Next.js 16 + TypeScript + Tailwind v4 + Supabase** (Postgres DB + Auth + Storage).
 
-First, run the development server:
+Ganti total dari versi HTML tunggal (`zyraf13/nduyku`) — sekarang ada database beneran, login pasangan, dan foto/video tersimpan di Supabase Storage.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Fitur
+- 🔐 Login email+password, cuma 2 email di allowlist yang bisa masuk (RLS di sisi DB)
+- 📸 Galeri: upload foto/video → Supabase Storage (bucket private, akses via signed URL)
+- 🎮 Games berdua: Cat Tic-Tac-Toe & Memory Match — hasil masuk DB (`game_results`)
+- 📊 Stats pasangan: menang/seri/love points (`stats` + RPC atomik)
+- 🌸 4 tema: Bunga, Senja, Hujan, Tenang (CSS variables, tersimpan di localStorage)
+- 🎵 Player lofi
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Bikin project** di [supabase.com](https://supabase.com) (free tier, ga perlu kartu kredit)
+2. **SQL Editor** → paste seluruh isi [`supabase/schema.sql`](supabase/schema.sql) → Run
+   - Edit dulu bagian `allowed_users` — ganti dengan 2 email kalian
+3. Ambil kredensial: **Project Settings → API** → salin `Project URL` & `anon public key`
+4. **Local**: salin `.env.local.example` → `.env.local`, isi kredensial → `npm run dev`
+5. **Deploy**: import repo ini ke [Vercel](https://vercel.com/new) → tambahkan 2 env var yang sama → Deploy
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Konfigurasi Supabase (sekali)
+- Authentication → Providers → Email: **matikan** "Confirm email" biar langsung login
+- Kalau email pasangan belum ada di `allowed_users`, jalankan:
+  `insert into allowed_users values ('email@pasangan.com','p2');`
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Catatan keamanan
+- Bucket `memories` **private** — cuma bisa dilihat lewat signed URL 1 jam oleh user yang lolos allowlist
+- Tabel `stats` tidak bisa diupdate langsung dari client, hanya lewat RPC `bump_stat`/`add_love`
+- RLS menutup semua tabel untuk siapa pun di luar allowlist
