@@ -59,7 +59,8 @@ create policy "read memories" on public.memories
 create policy "insert memories" on public.memories
   for insert to authenticated with check (user_email = auth.email());
 create policy "delete memories" on public.memories
-  for delete to authenticated using (true);
+  for delete to authenticated
+  using (user_email = auth.email());
 
 create policy "read results" on public.game_results
   for select to authenticated using (true);
@@ -72,6 +73,8 @@ create policy "read stats" on public.stats
 
 grant execute on function public.bump_stat(text) to authenticated;
 grant execute on function public.add_love(int) to authenticated;
+revoke execute on function public.bump_stat(text) from anon;
+revoke execute on function public.add_love(int) from anon;
 
 -- ===== Storage bucket =====
 insert into storage.buckets (id, name, public)
@@ -83,4 +86,5 @@ create policy "read memories object" on storage.objects
 create policy "upload memories object" on storage.objects
   for insert to authenticated with check (bucket_id = 'memories');
 create policy "delete memories object" on storage.objects
-  for delete to authenticated using (bucket_id = 'memories');
+  for delete to authenticated
+  using (bucket_id = 'memories' and owner = auth.uid());
