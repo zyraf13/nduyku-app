@@ -14,13 +14,12 @@ export default function Login() {
     e.preventDefault();
     setMsg("");
     const sb = supabase();
-    const { error } = mode === "in"
+    const { data, error } = mode === "in"
       ? await sb.auth.signInWithPassword({ email, password: pass })
       : await sb.auth.signUp({ email, password: pass });
     if (error) { setMsg(error.message); return; }
-    if (mode === "up") { setMsg("Akun dibuat! Kalau Supabase minta konfirmasi email, cek inbox dulu ya."); return; }
-    r.push("/");
-    r.refresh();
+    if (data.session) { r.push("/"); r.refresh(); return; }
+    setMsg("Akun dibuat, tapi tunggu konfirmasi email dulu ya.");
   }
 
   return (
