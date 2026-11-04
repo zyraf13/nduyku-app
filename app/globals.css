@@ -42,6 +42,7 @@
 
 /* mapping Tailwind v4: bg-srf, text-on-sv, dsb */
 @theme inline {
+  --font-display: var(--font-baloo), ui-rounded, system-ui, sans-serif;
   --color-srf-lowest: rgb(var(--c-srf-lowest));
   --color-srf-low: rgb(var(--c-srf-low));
   --color-srf: rgb(var(--c-srf));

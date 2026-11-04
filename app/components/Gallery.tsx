@@ -26,11 +26,12 @@ export default function Gallery() {
   useEffect(() => { load(); }, [load]);
 
   async function upload(files: FileList | null) {
-    if (!files?.length) return;
+    const list = Array.from(files ?? []);   // salin dulu — FileList ikut kosong kalau input di-reset
+    if (!list.length) return;
     setBusy(true);
     const sb = supabase();
     const { data: { user } } = await sb.auth.getUser();
-    for (const f of files) {
+    for (const f of list) {
       const path = `${user?.id}/${Date.now()}-${f.name}`;
       const { error: upErr } = await sb.storage.from("memories").upload(path, f);
       if (upErr) { alert("Upload gagal: " + upErr.message); continue; }

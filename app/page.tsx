@@ -6,6 +6,7 @@ import ThemeSwitcher from "./components/ThemeSwitcher";
 import MusicPlayer from "./components/MusicPlayer";
 import Gallery from "./components/Gallery";
 import Games from "./components/Games";
+import Mascot from "./components/Mascot";
 
 export type Stats = { p1_wins: number; p2_wins: number; draws: number; love_points: number };
 
@@ -36,15 +37,25 @@ export default function Home() {
 
   return (
     <main className="mx-auto min-h-screen max-w-3xl p-4 pb-40 sm:p-6">
-      <header className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="font-display text-3xl font-bold text-primary sm:text-4xl">Nduyku 💖</h1>
-          <p className="text-xs text-on-sv">Halo, {email}</p>
-        </div>
+      <header className="mb-4 flex items-center justify-between">
+        <p className="text-xs font-semibold text-on-sv">Halo, {email} 👋</p>
         <button onClick={logout} className="rounded-full bg-srf px-4 py-2 text-xs font-semibold text-on-sv transition hover:bg-err-c hover:text-on-err-c">
           Keluar
         </button>
       </header>
+
+      {/* hero ala v1 */}
+      <section className="mb-8 flex flex-col items-center gap-4 rounded-3xl bg-srf p-6 shadow sm:flex-row sm:justify-between sm:p-8">
+        <div className="text-center sm:text-left">
+          <h1 className="font-display text-3xl font-bold text-primary sm:text-5xl">Selamat di Nduyku 💕</h1>
+          <p className="mt-2 text-sm text-on-sv sm:text-base">Galeri, Games & Musik — cuma buat kita berdua</p>
+          <div className="mt-5 flex justify-center gap-3 sm:justify-start">
+            <a href="#galeri" className="rounded-full bg-primary px-6 py-3 text-sm font-bold text-on-primary shadow transition hover:opacity-90">🖼️ Buka Galeri</a>
+            <a href="#games" className="rounded-full bg-p-cont px-6 py-3 text-sm font-bold text-on-p-cont shadow transition hover:opacity-90">🎮 Main Games</a>
+          </div>
+        </div>
+        <Mascot />
+      </section>
 
       {/* stats */}
       <section className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -57,8 +68,8 @@ export default function Home() {
         ))}
       </section>
 
-      <Gallery />
-      <Games onDone={loadStats} />
+      <div id="galeri" className="scroll-mt-4"><Gallery /></div>
+      <div id="games" className="scroll-mt-4"><Games onDone={loadStats} /></div>
 
       <ThemeSwitcher />
       <MusicPlayer />
