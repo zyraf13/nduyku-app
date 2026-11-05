@@ -79,3 +79,9 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* CatchHearts: animasi jatuh (keyframes global, 1 tempat) */
+@keyframes ndy-fall {
+  from { transform: translateY(-12%); }
+  to { transform: translateY(260%); }
+}

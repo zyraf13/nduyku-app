@@ -88,3 +88,51 @@ create policy "upload memories object" on storage.objects
 create policy "delete memories object" on storage.objects
   for delete to authenticated
   using (bucket_id = 'memories' and owner = auth.uid());
+
+-- ===== v2.1 (2026-11-05) =====
+ALTER TABLE memories
+  ADD COLUMN IF NOT EXISTS notes TEXT DEFAULT '',
+  ADD COLUMN IF NOT EXISTS frame_style TEXT DEFAULT 'polaroid';
+
+CREATE TABLE IF NOT EXISTS couple_quizzes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  creator_email TEXT NOT NULL,
+  question TEXT NOT NULL,
+  options JSONB NOT NULL,
+  correct_index INT NOT NULL,
+  is_answered BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE couple_quizzes ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "read quizzes" ON couple_quizzes;
+DROP POLICY IF EXISTS "insert quizzes" ON couple_quizzes;
+DROP POLICY IF EXISTS "update quizzes" ON couple_quizzes;
+CREATE POLICY "read quizzes" ON couple_quizzes FOR SELECT TO authenticated USING (true);
+CREATE POLICY "insert quizzes" ON couple_quizzes FOR INSERT TO authenticated WITH CHECK (creator_email = auth.email());
+CREATE POLICY "update quizzes" ON couple_quizzes FOR UPDATE TO authenticated USING (creator_email = auth.email());
+
+-- jawab kuis: correct_index dicek di server (RLS SELECT tidak membocorkan jawaban)
+CREATE OR REPLACE FUNCTION answer_quiz(qid uuid, guess int)
+RETURNS boolean
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+DECLARE q record; ok boolean;
+BEGIN
+  SELECT * INTO q FROM couple_quizzes WHERE id = qid AND NOT is_answered;
+  IF q.id IS NULL THEN RETURN FALSE; END IF;
+  ok := (guess = q.correct_index);
+  IF ok THEN
+    UPDATE couple_quizzes SET is_answered = true WHERE id = qid;
+    UPDATE stats SET love_points = love_points + 5, updated_at = now() WHERE id = 1;
+  END IF;
+  RETURN ok;
+END $$;
+GRANT EXECUTE ON FUNCTION answer_quiz(uuid, int) TO authenticated;
+REVOKE EXECUTE ON FUNCTION answer_quiz(uuid, int) FROM anon;
+
+-- GAP-1: pts harus > 0
+CREATE OR REPLACE FUNCTION add_love(pts int)
+RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+  IF pts <= 0 THEN RAISE EXCEPTION 'pts harus > 0'; END IF;
+  UPDATE stats SET love_points = love_points + pts, updated_at = now() WHERE id = 1;
+END $$;
