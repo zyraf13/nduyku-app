@@ -40,7 +40,9 @@ export default function GalleryPage() {
     const { data: { user } } = await sb.auth.getUser();
     try {
       const small = await compressImage(file);
-      const path = `${user?.id}/${Date.now()}-${small.name}`;
+      // nama file asli disimpan di DB; path storage cuma ascii (emoji/spasi ditolak Supabase)
+      const ext = (small.type.split("/")[1] || "bin").replace("jpeg", "jpg");
+      const path = `${user?.id}/${Date.now()}.${ext}`;
       const { error: upErr } = await sb.storage.from("memories").upload(path, small);
       if (upErr) throw new Error("Upload gagal: " + upErr.message);
       const { error: dbErr } = await sb.from("memories").insert({
